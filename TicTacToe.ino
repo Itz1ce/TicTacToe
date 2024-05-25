@@ -25,25 +25,25 @@ Tic Tac Toe
 #define Q8V 36
 #define Q9V 38
 
-#define P1R 40
-#define P2R 42
-#define P3R 44
-#define P4R 46
-#define P5R 48
-#define P6R 50
-#define P7R 41
-#define P8R 43
-#define P9R 45
+#define P1R 2
+#define P2R 3
+#define P3R 4
+#define P4R 5
+#define P5R 6
+#define P6R 7
+#define P7R 8
+#define P8R 9
+#define P9R 10
 
-#define P1V 2
-#define P2V 3
-#define P3V 4
-#define P4V 5
-#define P5V 6
-#define P6V 7
-#define P7V 8
-#define P8V 9
-#define P9V 10
+#define P1V 45
+#define P2V 43
+#define P3V 41
+#define P4V 50
+#define P5V 48
+#define P6V 46
+#define P7V 44
+#define P8V 42
+#define P9V 40
 
 #define debugPin 13
 
