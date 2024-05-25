@@ -15,166 +15,166 @@ LEGEND:
 */
 
 /*------- PIN INIZIALIZATION-------*/
-#define XTLI 2
-#define XTMI 3
-#define XTRI 4
-#define XMLI 5
-#define XMMI 6
-#define XMRI 7
-#define XBLI 8
-#define XBMI 9
-#define XBRI 10
+#define Q1R 23
+#define Q2R 25
+#define Q3R 27
+#define Q4R 29
+#define Q5R 31
+#define Q6R 33
+#define Q7R 35
+#define Q8R 37
+#define Q9R 39
 
-#define QTLI 22
-#define QTMI 23
-#define QTRI 24
-#define QMLI 25
-#define QMMI 26
-#define QMRI 27
-#define QBLI 28
-#define QBMI 29
-#define QBRI 30
+#define Q1V 22
+#define Q2V 24
+#define Q3V 26
+#define Q4V 28
+#define Q5V 30
+#define Q6V 32
+#define Q7V 34
+#define Q8V 36
+#define Q9V 38
 
-#define XTLO 31
-#define XTMO 32
-#define XTRO 33
-#define XMLO 34
-#define XMMO 35
-#define XMRO 36
-#define XBLO 37
-#define XBMO 38
-#define XBRO 39
+#define P1R 40
+#define P2R 41
+#define P3R 42
+#define P4R 43
+#define P5R 44
+#define P6R 45
+#define P7R 46
+#define P8R 47
+#define P9R 48
 
-#define QTLO 40
-#define QTMO 41
-#define QTRO 42
-#define QMLO 43
-#define QMMO 44
-#define QMRO 45
-#define QBLO 46
-#define QBMO 47
-#define QBRO 48
+#define P1V 2
+#define P2V 3
+#define P3V 4
+#define P4V 5
+#define P5V 6
+#define P6V 7
+#define P7V 8
+#define P8V 9
+#define P9V 10
 
-#define RESET 51
-#define XTURN 52
-#define QTURN 53
-
-/*-------SIMPLIFICATION TOOLS-------*/
-int REN[9] = {0,0,0,0,0,0,0,0,0};
-
-int XSEL[9] = {XTLI,XTMI,XTRI,XMLI,XMMI,XMRI,XBLI,XBMI,XBRI};
-int QSEL[9] = {QTLI,QTMI,QTRI,QMLI,QMMI,QMRI,QBLI,QBMI,QBRI};
-
-int XGEN[9] = {XTLO,XTMO,XTRO,XMLO,XMMO,XMRO,XBLO,XBMO,XBRO};
-int QGEN[9] = {QTLO,QTMO,QTRO,QMLO,QMMO,QMRO,QBLO,QBMO,QBRO};
+#define debugPin 13
 
 /*-------SYS VARIABLES-------*/
-int sel;
-int i;
-int randomNum;
-bool turn = true; // true = X-Player1, false = Q-Player2
+int ledState = HIGH;
+
+int turn = false;
+
+/*-------SIMPLIFICATION TOOLS-------*/
+int CH[9] = {0,0,0,0,0,0,0,0,0};
+
+int QR[9] = {Q1R,Q2R,Q3R,Q4R,Q5R,Q6R,Q7R,Q8R,Q9R};
+int QV[9] = {Q1V,Q2V,Q3V,Q4V,Q5V,Q6V,Q7V,Q8V,Q9V};
+
+int PR[9] = {P1R,P2R,P3R,P4R,P5R,P6R,P7R,P8R,P9R};
+int PV[9] = {P1V,P2V,P3V,P4V,P5V,P6V,P7V,P8V,P9V};
 
 /*-------I/O INIZIALIZATION-------*/
 void setup() {
-	Serial.begin(9600);
-	for(i = 0; i < 9; i++) {
-		pinMode(XSEL[i], INPUT);
-		pinMode(QSEL[i], INPUT);
+  for(int i = 0; i < 9; i++){
+    pinMode(PR[i], INPUT);
+    pinMode(PV[i], INPUT);
 
-		pinMode(XGEN[i], OUTPUT);
-		pinMode(QGEN[i], OUTPUT);
-	}
-	pinMode(RESET, INPUT);
-	pinMode(XTURN, OUTPUT);
-	pinMode(QTURN, OUTPUT);
+    pinMode(QR[i], OUTPUT);
+    pinMode(QV[i], OUTPUT);
+  }
 }
 
+/*-------I/O ENGINE-------*/
 void loop() {
-	wins();
-	reset();
-	turnSys();
-	if(digitalRead(XSEL[0]) == HIGH || digitalRead(QSEL[0]) == HIGH) {	sel=0;}
-	if(digitalRead(XSEL[1]) == HIGH || digitalRead(QSEL[1]) == HIGH) {	sel=1;}
-	if(digitalRead(XSEL[2]) == HIGH || digitalRead(QSEL[2]) == HIGH) {	sel=2;}
-	if(digitalRead(XSEL[3]) == HIGH || digitalRead(QSEL[3]) == HIGH) {	sel=3;}
-	if(digitalRead(XSEL[4]) == HIGH || digitalRead(QSEL[4]) == HIGH) {	sel=4;}
-	if(digitalRead(XSEL[5]) == HIGH || digitalRead(QSEL[5]) == HIGH) {	sel=5;}
-	if(digitalRead(XSEL[6]) == HIGH || digitalRead(QSEL[6]) == HIGH) {	sel=6;}
-	if(digitalRead(XSEL[7]) == HIGH || digitalRead(QSEL[7]) == HIGH) {	sel=7;}
-	if(digitalRead(XSEL[8]) == HIGH || digitalRead(QSEL[8]) == HIGH) {	sel=8;}
-	if(REN[sel] == 0) {
-		if(turn == true) {
-			digitalWrite(XGEN[sel], HIGH);
-			REN[sel] = 1;
-		} else {
-			digitalWrite(QGEN[sel], HIGH);
-			REN[sel] = 2;
-		}
-		turn != turn;
-	}
+  if (digitalRead(debugPin) == HIGH) {
+    for(int i = 0; i < 9; i++){
+      if(digitalRead(PR[i]) == HIGH) {
+        digitalWrite(QR[i], HIGH);
+      }
+      if(digitalRead(PV[i]) == HIGH) {
+        digitalWrite(QV[i], HIGH);
+      }
+    }
+  } else {
+    wins();
+    for(int i = 0; i < 9; i++){
+      if(digitalRead(PR[i]) == HIGH && turn == true && CH[i] == 0) {
+        digitalWrite(QR[i], HIGH);
+        turn = false;
+        CH[i] = 1;
+      }
+      if(digitalRead(PV[i]) == HIGH && turn == false && CH[i] == 0) {
+        digitalWrite(QV[i], HIGH);
+        turn = true;
+        CH[i] = 2;
+      }
+    }
+  }
 }
 
 /*-------SYS FUNCTIONS-------*/
 void clean() {
-	for(i = 0; i < 9; i++) {
-		digitalWrite(XGEN[i], LOW);
-		digitalWrite(QGEN[i], LOW);
-		REN[i] = 0;
-	}
-}
-
-void reset() {
-	if(digitalRead(RESET) == HIGH) {
-		clean();
-		turn = true;
-	}
-}
-
-void turnSys() {
-	if(turn == true) {
-		digitalWrite(XTURN, HIGH);
-		digitalWrite(QTURN, LOW);
-	} else {
-		digitalWrite(XTURN, LOW);
-		digitalWrite(QTURN, HIGH);
-	}
-}
-
-void wins() {
-	//top-left->right
-	win(0, 1, 2, 1);
-	win(0, 1, 2, 2);
-	//middle-left->right
-	win(3, 4, 5, 1);
-	win(3, 4, 5, 2);
-	//bottom-left->right
-	win(6, 7, 8, 1);
-	win(6, 7, 8, 2);
-	//left-top->bottom
-	win(0, 3, 6, 1);
-	win(0, 3, 6, 2);
-	//middle-top->bottom
-	win(1, 4, 7, 1);
-	win(1, 4, 7, 2);
-	//right-top->bottom
-	win(2, 5, 8, 1);
-	win(2, 5, 8, 2);
-	//top-left->bottom-right
-	win(0, 4, 8, 1);
-	win(0, 4, 8, 2);
-	//top-right->bottom-left
-	win(2, 4, 6, 1);
-	win(2, 4, 6, 2);
+  for(int i = 0; i < 9; i++){
+    digitalWrite(QR[i], LOW);
+    digitalWrite(QV[i], LOW);
+    CH[i] = 0;
+  }
 }
 
 void win(int a, int b, int c, int p) {
-	if(REN[a] == p && REN[b] == p && REN[c] == p) {
-		clean();
-		for(i = 0; i<9; i++) {
-			REN[i] = 3;
-		}
-		digitalWrite(REN[a], HIGH);
-		digitalWrite(REN[b], HIGH);
-		digitalWrite(REN[c], HIGH);
-	}
+  if(CH[a] == p && CH[b] == p && CH[c] == p) {
+    if(p == 2){
+      for(int i = 0; i < 4; i++){
+        digitalWrite(QV[a], HIGH);
+        digitalWrite(QV[b], HIGH);
+        digitalWrite(QV[c], HIGH);
+        delay(1000);
+        digitalWrite(QV[a], LOW);
+        digitalWrite(QV[b], LOW);
+        digitalWrite(QV[c], LOW);
+        delay(1000);
+      }
+    }
+    if(p == 1){
+      for(int i = 0; i < 4; i++){
+        digitalWrite(QR[a], HIGH);
+        digitalWrite(QR[b], HIGH);
+        digitalWrite(QR[c], HIGH);
+        delay(1000);
+        digitalWrite(QR[a], LOW);
+        digitalWrite(QR[b], LOW);
+        digitalWrite(QR[c], LOW);
+        delay(1000);
+      }
+    }
+    for(int i = 0; i<9; i++) {
+      CH[i] = 3;
+    }
+    clean();
+  }
+}
+
+void wins() {
+  //top-left->right
+  win(0, 1, 2, 1);
+  win(0, 1, 2, 2);
+  //middle-left->right
+  win(3, 4, 5, 1);
+  win(3, 4, 5, 2);
+  //bottom-left->right
+  win(6, 7, 8, 1);
+  win(6, 7, 8, 2);
+  //left-top->bottom
+  win(0, 3, 6, 1);
+  win(0, 3, 6, 2);
+  //middle-top->bottom
+  win(1, 4, 7, 1);
+  win(1, 4, 7, 2);
+  //right-top->bottom
+  win(2, 5, 8, 1);
+  win(2, 5, 8, 2);
+  //top-left->bottom-right
+  win(0, 4, 8, 1);
+  win(0, 4, 8, 2);
+  //top-right->bottom-left
+  win(2, 4, 6, 1);
+  win(2, 4, 6, 2);
 }
