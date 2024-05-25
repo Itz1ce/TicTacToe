@@ -1,19 +1,9 @@
 /*
+
 Tic Tac Toe
  - MADE BY BOTAN DENIS 4AAT-2023/24
- 
-LEGEND:
-  X = PLAYER WITH X
-  Q = PLAYER WITH O
-  I = INPUT
-  O = OUTPUT
-  T = TOP
-  M = MIDDLE
-  B = BOTTOM
-  L = LEFT
-  R = RIGHT
-*/
 
+*/
 /*------- PIN INIZIALIZATION-------*/
 #define Q1R 23
 #define Q2R 25
@@ -36,14 +26,14 @@ LEGEND:
 #define Q9V 38
 
 #define P1R 40
-#define P2R 41
-#define P3R 42
-#define P4R 43
-#define P5R 44
-#define P6R 45
-#define P7R 46
-#define P8R 47
-#define P9R 48
+#define P2R 42
+#define P3R 44
+#define P4R 46
+#define P5R 48
+#define P6R 50
+#define P7R 41
+#define P8R 43
+#define P9R 45
 
 #define P1V 2
 #define P2V 3
@@ -62,7 +52,7 @@ int ledState = HIGH;
 
 int turn = false;
 
-/*-------SIMPLIFICATION TOOLS-------*/
+/*-------PIN ARRAYS-------*/
 int CH[9] = {0,0,0,0,0,0,0,0,0};
 
 int QR[9] = {Q1R,Q2R,Q3R,Q4R,Q5R,Q6R,Q7R,Q8R,Q9R};
@@ -73,6 +63,7 @@ int PV[9] = {P1V,P2V,P3V,P4V,P5V,P6V,P7V,P8V,P9V};
 
 /*-------I/O INIZIALIZATION-------*/
 void setup() {
+  pinMode(debugPin, INPUT);
   for(int i = 0; i < 9; i++){
     pinMode(PR[i], INPUT);
     pinMode(PV[i], INPUT);
@@ -84,7 +75,7 @@ void setup() {
 
 /*-------I/O ENGINE-------*/
 void loop() {
-  if (digitalRead(debugPin) == HIGH) {
+  if (digitalRead(debugPin) == LOW) {
     for(int i = 0; i < 9; i++){
       if(digitalRead(PR[i]) == HIGH) {
         digitalWrite(QR[i], HIGH);
@@ -121,16 +112,17 @@ void clean() {
 
 void win(int a, int b, int c, int p) {
   if(CH[a] == p && CH[b] == p && CH[c] == p) {
+    int time = 500;
     if(p == 2){
       for(int i = 0; i < 4; i++){
         digitalWrite(QV[a], HIGH);
         digitalWrite(QV[b], HIGH);
         digitalWrite(QV[c], HIGH);
-        delay(1000);
+        delay(time);
         digitalWrite(QV[a], LOW);
         digitalWrite(QV[b], LOW);
         digitalWrite(QV[c], LOW);
-        delay(1000);
+        delay(time);
       }
     }
     if(p == 1){
@@ -138,11 +130,11 @@ void win(int a, int b, int c, int p) {
         digitalWrite(QR[a], HIGH);
         digitalWrite(QR[b], HIGH);
         digitalWrite(QR[c], HIGH);
-        delay(1000);
+        delay(time);
         digitalWrite(QR[a], LOW);
         digitalWrite(QR[b], LOW);
         digitalWrite(QR[c], LOW);
-        delay(1000);
+        delay(time);
       }
     }
     for(int i = 0; i<9; i++) {
