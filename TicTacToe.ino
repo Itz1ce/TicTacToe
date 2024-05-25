@@ -15,15 +15,15 @@ Tic Tac Toe
 #define Q8R 37
 #define Q9R 39
 
-#define Q1V 22
-#define Q2V 24
-#define Q3V 26
-#define Q4V 28
-#define Q5V 30
-#define Q6V 32
-#define Q7V 34
-#define Q8V 36
-#define Q9V 38
+#define Q1G 22
+#define Q2G 24
+#define Q3G 26
+#define Q4G 28
+#define Q5G 30
+#define Q6G 32
+#define Q7G 34
+#define Q8G 36
+#define Q9G 38
 
 #define P1R 2
 #define P2R 3
@@ -35,15 +35,18 @@ Tic Tac Toe
 #define P8R 9
 #define P9R 10
 
-#define P1V 45
-#define P2V 43
-#define P3V 41
-#define P4V 50
-#define P5V 48
-#define P6V 46
-#define P7V 44
-#define P8V 42
-#define P9V 40
+#define P1G 45
+#define P2G 43
+#define P3G 41
+#define P4G 50
+#define P5G 48
+#define P6G 46
+#define P7G 44
+#define P8G 42
+#define P9G 40
+
+#define TR 11
+#define TG 12
 
 #define debugPin 13
 
@@ -54,25 +57,26 @@ int turn = false, time = 500, ledState = HIGH;
 int CH[9] = {0,0,0,0,0,0,0,0,0};
 
 int QR[9] = {Q1R,Q2R,Q3R,Q4R,Q5R,Q6R,Q7R,Q8R,Q9R};
-int QV[9] = {Q1V,Q2V,Q3V,Q4V,Q5V,Q6V,Q7V,Q8V,Q9V};
+int QG[9] = {Q1G,Q2G,Q3G,Q4G,Q5G,Q6G,Q7G,Q8G,Q9G};
 
 int PR[9] = {P1R,P2R,P3R,P4R,P5R,P6R,P7R,P8R,P9R};
-int PV[9] = {P1V,P2V,P3V,P4V,P5V,P6V,P7V,P8V,P9V};
+int PG[9] = {P1G,P2G,P3G,P4G,P5G,P6G,P7G,P8G,P9G};
 
 /*-------I/O INIZIALIZATION-------*/
 void setup() {
   pinMode(debugPin, INPUT);
   for(int i = 0; i < 9; i++) {
     pinMode(PR[i], INPUT);
-    pinMode(PV[i], INPUT);
+    pinMode(PG[i], INPUT);
 
     pinMode(QR[i], OUTPUT);
-    pinMode(QV[i], OUTPUT);
+    pinMode(QG[i], OUTPUT);
   }
 }
 
 /*-------I/O ENGINE-------*/
 void loop() {
+  turnLed();
   full();
   if (digitalRead(debugPin) == LOW) {
     for(int i = 0; i < 9; i++) {
@@ -80,8 +84,8 @@ void loop() {
         digitalWrite(QR[i], HIGH);
         CH[i] = 9;
       }
-      if(digitalRead(PV[i]) == HIGH) {
-        digitalWrite(QV[i], HIGH);
+      if(digitalRead(PG[i]) == HIGH) {
+        digitalWrite(QG[i], HIGH);
         CH[i] = 9;
       }
     }
@@ -93,8 +97,8 @@ void loop() {
         turn = false;
         CH[i] = 1;
       }
-      if(digitalRead(PV[i]) == HIGH && turn == false && CH[i] == 0) {
-        digitalWrite(QV[i], HIGH);
+      if(digitalRead(PG[i]) == HIGH && turn == false && CH[i] == 0) {
+        digitalWrite(QG[i], HIGH);
         turn = true;
         CH[i] = 2;
       }
@@ -103,10 +107,20 @@ void loop() {
 }
 
 /*-------SYS FUNCTIONS-------*/
+void turnLed() {
+  if(turn = true) {
+    digitalWrite(TR, HIGH);
+    digitalWrite(TG, LOW);
+  } else {
+    digitalWrite(TR, LOW);
+    digitalWrite(TG, HIGH);
+  }
+}
+
 void clean() {
   for(int i = 0; i < 9; i++) {
     digitalWrite(QR[i], LOW);
-    digitalWrite(QV[i], LOW);
+    digitalWrite(QG[i], LOW);
     CH[i] = 0;
   }
 }
@@ -115,13 +129,13 @@ void win(int a, int b, int c, int p) {
   if(CH[a] == p && CH[b] == p && CH[c] == p) {
     if(p == 2){
       for(int i = 0; i < 4; i++) {
-        digitalWrite(QV[a], HIGH);
-        digitalWrite(QV[b], HIGH);
-        digitalWrite(QV[c], HIGH);
+        digitalWrite(QG[a], HIGH);
+        digitalWrite(QG[b], HIGH);
+        digitalWrite(QG[c], HIGH);
         delay(time);
-        digitalWrite(QV[a], LOW);
-        digitalWrite(QV[b], LOW);
-        digitalWrite(QV[c], LOW);
+        digitalWrite(QG[a], LOW);
+        digitalWrite(QG[b], LOW);
+        digitalWrite(QG[c], LOW);
         delay(time);
       }
     }
