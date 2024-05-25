@@ -74,6 +74,7 @@ bool turn = true; // true = X, false =Q
 
 /*-------I/O INIZIALIZATION-------*/
 void setup() {
+  Serial.begin(9600);
   for(i = 0; i < 9; i++){
     pinMode(XSEL[i], INPUT);
     pinMode(QSEL[i], INPUT);
@@ -87,6 +88,8 @@ void setup() {
 }
 
 void loop() {
+  debug();
+  wins();
   reset();
   turnSys();
   TL();
@@ -110,15 +113,18 @@ void off(int pin){
 }
 
 /*-------SYS FUNCTIONS-------*/
+void clean() {
+  for(i = 0; i < 9; i++){
+    off(XGEN[i]);
+    off(QGEN[i]);
+    REN[i] = 0;
+  }
+}
+
 void reset(){
   if(digitalRead(RESET) == HIGH){
-    for(i = 0; i < 9; i++){
-      off(XGEN[i]);
-      off(QGEN[i]);
-      REN[i] = 0;
-      turn = true;
-    }
-    
+    clean();
+    turn = true;
   }
 }
 
@@ -293,4 +299,80 @@ void BR(){
       }
     }
   }
+}
+
+void wins() {
+  //top-left->right
+  win(0, 1, 2, 1);
+  win(0, 1, 2, 2);
+  //middle-left->right
+  win(3, 4, 5, 1);
+  win(3, 4, 5, 2);
+  //bottom-left->right
+  win(6, 7, 8, 1);
+  win(6, 7, 8, 2);
+  //left-top->bottom
+  win(0, 3, 6, 1);
+  win(0, 3, 6, 2);
+  //middle-top->bottom
+  win(1, 4, 7, 1);
+  win(1, 4, 7, 2);
+  //right-top->bottom
+  win(2, 5, 8, 1);
+  win(2, 5, 8, 2);
+  //top-left->bottom-right
+  win(0, 4, 8, 1);
+  win(0, 4, 8, 2);
+  //top-right->bottom-left
+  win(2, 4, 6, 1);
+  win(2, 4, 6, 2);
+}
+
+void win(int a, int b, int c, int p) {
+  if(REN[a] == p && REN[b] == p && REN[c] == p) {
+    clean();
+    for(i = 0; i<9; i++) {
+      REN[i] = 3;
+    }
+    digitalWrite(REN[a], HIGH);
+    digitalWrite(REN[b], HIGH);
+    digitalWrite(REN[c], HIGH);
+  }
+}
+
+void debug(){
+	Serial.print(turn);
+	Serial.print(" REN[");
+	Serial.print(REN[0]);
+	Serial.print(REN[1]);
+	Serial.print(REN[2]);
+	Serial.print(REN[3]);
+	Serial.print(REN[4]);
+	Serial.print(REN[5]);
+	Serial.print(REN[6]);
+	Serial.print(REN[7]);
+	Serial.print(REN[8]);
+	Serial.print("] ");
+	Serial.print(" XGEN[");
+	Serial.print(digitalRead(XGEN[0]));
+	Serial.print(digitalRead(XGEN[1]));
+	Serial.print(digitalRead(XGEN[2]));
+	Serial.print(digitalRead(XGEN[3]));
+	Serial.print(digitalRead(XGEN[4]));
+	Serial.print(digitalRead(XGEN[5]));
+	Serial.print(digitalRead(XGEN[6]));
+	Serial.print(digitalRead(XGEN[7]));
+	Serial.print(digitalRead(XGEN[8]));
+	Serial.println("] ");
+  Serial.print(" QGEN[");
+	Serial.print(digitalRead(QGEN[0]));
+	Serial.print(digitalRead(QGEN[1]));
+	Serial.print(digitalRead(QGEN[2]));
+	Serial.print(digitalRead(QGEN[3]));
+	Serial.print(digitalRead(QGEN[4]));
+	Serial.print(digitalRead(QGEN[5]));
+	Serial.print(digitalRead(QGEN[6]));
+	Serial.print(digitalRead(QGEN[7]));
+	Serial.print(digitalRead(QGEN[8]));
+	Serial.println("] ");
 }
