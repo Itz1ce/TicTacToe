@@ -48,9 +48,7 @@ Tic Tac Toe
 #define debugPin 13
 
 /*-------SYS VARIABLES-------*/
-int ledState = HIGH;
-
-int turn = false;
+int turn = false, time = 500, ledState = HIGH;
 
 /*-------PIN ARRAYS-------*/
 int CH[9] = {0,0,0,0,0,0,0,0,0};
@@ -64,7 +62,7 @@ int PV[9] = {P1V,P2V,P3V,P4V,P5V,P6V,P7V,P8V,P9V};
 /*-------I/O INIZIALIZATION-------*/
 void setup() {
   pinMode(debugPin, INPUT);
-  for(int i = 0; i < 9; i++){
+  for(int i = 0; i < 9; i++) {
     pinMode(PR[i], INPUT);
     pinMode(PV[i], INPUT);
 
@@ -75,18 +73,21 @@ void setup() {
 
 /*-------I/O ENGINE-------*/
 void loop() {
+  full();
   if (digitalRead(debugPin) == LOW) {
-    for(int i = 0; i < 9; i++){
+    for(int i = 0; i < 9; i++) {
       if(digitalRead(PR[i]) == HIGH) {
         digitalWrite(QR[i], HIGH);
+        CH[i] = 9;
       }
       if(digitalRead(PV[i]) == HIGH) {
         digitalWrite(QV[i], HIGH);
+        CH[i] = 9;
       }
     }
   } else {
     wins();
-    for(int i = 0; i < 9; i++){
+    for(int i = 0; i < 9; i++) {
       if(digitalRead(PR[i]) == HIGH && turn == true && CH[i] == 0) {
         digitalWrite(QR[i], HIGH);
         turn = false;
@@ -103,7 +104,7 @@ void loop() {
 
 /*-------SYS FUNCTIONS-------*/
 void clean() {
-  for(int i = 0; i < 9; i++){
+  for(int i = 0; i < 9; i++) {
     digitalWrite(QR[i], LOW);
     digitalWrite(QV[i], LOW);
     CH[i] = 0;
@@ -112,9 +113,8 @@ void clean() {
 
 void win(int a, int b, int c, int p) {
   if(CH[a] == p && CH[b] == p && CH[c] == p) {
-    int time = 500;
     if(p == 2){
-      for(int i = 0; i < 4; i++){
+      for(int i = 0; i < 4; i++) {
         digitalWrite(QV[a], HIGH);
         digitalWrite(QV[b], HIGH);
         digitalWrite(QV[c], HIGH);
@@ -125,8 +125,8 @@ void win(int a, int b, int c, int p) {
         delay(time);
       }
     }
-    if(p == 1){
-      for(int i = 0; i < 4; i++){
+    if(p == 1) {
+      for(int i = 0; i < 4; i++) {
         digitalWrite(QR[a], HIGH);
         digitalWrite(QR[b], HIGH);
         digitalWrite(QR[c], HIGH);
@@ -169,4 +169,10 @@ void wins() {
   //top-right->bottom-left
   win(2, 4, 6, 1);
   win(2, 4, 6, 2);
+}
+
+void full() {
+  if(CH[0] != 0 && CH[1] != 0 && CH[2] != 0 && CH[3] != 0 && CH[4] != 0 && CH[5] != 0 && CH[6] != 0 && CH[7] != 0 && CH[8] != 0) {
+    clean();
+  }
 }
